@@ -19,14 +19,7 @@ Check out the live app here:
 
 ---
 
-## 🎬 Screenshots / GIF
 
-![Add Ride Screenshot](https://via.placeholder.com/600x400?text=Add+Ride+Form)  
-![Rides List Screenshot](https://via.placeholder.com/600x400?text=Available+Rides)
-
-![Carpool Finder Demo GIF](https://via.placeholder.com/800x400?text=Demo+GIF)
-
----
 
 ## 🔹 Features
 
