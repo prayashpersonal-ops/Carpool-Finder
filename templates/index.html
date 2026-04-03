@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RideGreen</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #0f172a;
+    overflow-x: hidden;
+    color: white;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 30%, #22c55e33, transparent),
+                radial-gradient(circle at 70% 70%, #3b82f633, transparent);
+    animation: moveBg 10s infinite alternate;
+    z-index: -1;
+}
+
+@keyframes moveBg {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(-50px,-50px); }
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    animation: slideDown 1s ease;
+}
+
+@keyframes slideDown {
+    from {transform: translateY(-50px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+
+.logo span:last-child {
+    color: #22c55e;
+}
+
+.hero {
+    text-align: center;
+    margin-top: 120px;
+    animation: fadeUp 1.5s ease;
+}
+
+@keyframes fadeUp {
+    from {opacity: 0; transform: translateY(40px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.hero h1 {
+    font-size: 3rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% {transform: translateY(0);}
+    50% {transform: translateY(-10px);}
+}
+
+.green-text {
+    background: linear-gradient(45deg,#22c55e,#4ade80);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.typing {
+    width: fit-content;
+    margin: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typing 3s steps(30);
+}
+
+@keyframes typing {
+    from {width: 0;}
+    to {width: 100%;}
+}
+
+.hero p {
+    margin: 20px 0;
+    color: #cbd5f5;
+}
+
+.btn {
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.4s;
+}
+
+.primary {
+    background: linear-gradient(45deg,#22c55e,#4ade80);
+}
+
+.secondary {
+    background: linear-gradient(45deg,#3b82f6,#60a5fa);
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
+
+.section {
+    display: none;
+    padding: 40px;
+    text-align: center;
+    animation: fadeUp 0.8s ease;
+}
+
+.active {
+    display: block;
+}
+
+input {
+    display: block;
+    width: 300px;
+    margin: 12px auto;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 15px #22c55e;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    margin: 20px auto;
+    width: 320px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.green {
+    color: #22c55e;
+}
+
+@media(max-width:768px){
+    .hero h1 {
+        font-size: 2rem;
+    }
+    input {
+        width: 90%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">Ride<span>Green</span></div>
+</div>
+
+<div id="home" class="hero active">
+    <h1 class="typing">
+        Ride Smart. <span class="green-text">Save More.</span>
+    </h1>
+    <p>💸 Save Cost | 🌱 Reduce Emissions | 👥 Share Rides</p>
+
+    <button class="btn primary" onclick="showSection('post')">Offer Ride</button>
+    <button class="btn secondary" onclick="showSection('find')">Find Ride</button>
+</div>
+
+<div id="post" class="section">
+    <h2>Offer a Ride</h2>
+    <br>
+    <label>⏰ Select Time</label>
+    <input id="time" type="time">
+    <input id="name" placeholder="Your Name">
+    <input id="phone" placeholder="Phone Number">
+    <input id="start" placeholder="Start Location">
+    <input id="destination" placeholder="Destination">
+    <input id="seats" type="number" placeholder="Seats">
+    <input id="cost" type="number" placeholder="Cost per person">
+    <input id="pin" type="password" placeholder="Set 4-digit PIN">
+
+    <button class="btn primary" onclick="addRide()">Post Ride</button>
+    <button class="btn secondary" onclick="showSection('home')">Back</button>
+</div>
+
+<div id="find" class="section">
+    <h2>Available Rides 🔍</h2>
+    <div id="ridesContainer"></div>
+
+    <button class="btn secondary" onclick="showSection('home')">Back</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1e293b;padding:12px 25px;border-radius:12px;opacity:0;transition:0.4s;"></div>
+
+<!-- PIN MODAL -->
+<div id="pinModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:0.3s;">
+    <div style="background:#1e293b;padding:25px;border-radius:15px;text-align:center;">
+        <h3>Enter PIN</h3>
+        <input id="deletePin" type="password" placeholder="4-digit PIN">
+        <br>
+        <button class="btn primary" onclick="confirmDelete()">Delete</button>
+        <button class="btn secondary" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<script>
+let deleteId = null;
+
+function showToast(msg) {
+    let t = document.getElementById("toast");
+    t.innerText = msg;
+    t.style.opacity = 1;
+    setTimeout(() => t.style.opacity = 0, 2500);
+}
+
+function showSection(id) {
+    document.querySelectorAll('.hero, .section').forEach(sec => {
+        sec.classList.remove('active');
+    });
+
+    document.getElementById(id).classList.add('active');
+
+    if (id === "find") {
+        displayRides();
+    }
+}
+
+function addRide() {
+    let name = document.getElementById("name");
+    let phone = document.getElementById("phone");
+    let start = document.getElementById("start");
+    let destination = document.getElementById("destination");
+    let time = document.getElementById("time");
+    let seats = document.getElementById("seats");
+    let cost = document.getElementById("cost");
+    let pin = document.getElementById("pin");
+
+    if (!name.value || !phone.value || !start.value || !destination.value) {
+        showToast("Fill all fields!");
+        return;
+    }
+
+    if (pin.value.length !== 4) {
+        showToast("PIN must be 4 digits!");
+        return;
+    }
+
+    let ride = {
+        name: name.value,
+        phone: phone.value,
+        start: start.value,
+        destination: destination.value,
+        time: time.value,
+        seats: seats.value,
+        cost: cost.value,
+        pin: pin.value
+    };
+
+    fetch("/add_ride", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ride)
+    })
+    .then(res => res.json())
+    .then(() => {
+        showToast("Ride posted successfully 🚀");
+        showSection("find");
+    });
+}
+
+function displayRides() {
+    fetch("/get_rides")
+    .then(res => res.json())
+    .then(rides => {
+        let container = document.getElementById("ridesContainer");
+        container.innerHTML = "";
+
+        if (rides.length === 0) {
+            container.innerHTML = "<p>No rides available</p>";
+            return;
+        }
+
+        rides.reverse().forEach(r => {
+            let co2 = (r.seats - 1) * 120;
+
+            container.innerHTML += `
+            <div class="card">
+                <h3>${r.start} → ${r.destination}</h3>
+                <p>👤 ${r.name}</p>
+                <p>📞 ${r.phone}</p>
+                <p>⏰ ${r.time}</p>
+                <p>👥 Seats: ${r.seats}</p>
+                <p>💰 ₹${r.cost}</p>
+                <p class="green">🌱 CO₂ Saved: ${co2} g/km</p>
+
+                <button class="btn secondary" onclick="openModal(${r.id})">
+                    ❌ Delete Ride
+                </button>
+            </div>`;
+        });
+    });
+}
+
+function openModal(id) {
+    deleteId = id;
+    let modal = document.getElementById("pinModal");
+    modal.style.opacity = 1;
+    modal.style.pointerEvents = "auto";
+}
+
+function closeModal() {
+    let modal = document.getElementById("pinModal");
+    modal.style.opacity = 0;
+    modal.style.pointerEvents = "none";
+}
+
+function confirmDelete() {
+    let userPin = document.getElementById("deletePin").value;
+
+    if (!userPin) return;
+
+    fetch(`/delete_ride/${deleteId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ pin: userPin })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "deleted") {
+            showToast("Ride deleted ✅");
+            displayRides();
+        } else {
+            showToast("Wrong PIN ❌");
+        }
+        closeModal();
+    });
+}
+</script>
+
+</body>
+</html>
